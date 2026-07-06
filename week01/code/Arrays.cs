@@ -13,7 +13,29 @@ public static class Arrays
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
 
-        return []; // replace this return statement with your own
+        /*
+        PLAN FOR MultiplesOf:
+        1. Create a new double array with size equal to 'length'
+        2. Loop from i = 0 to i < length
+        3. For each iteration, calculate the multiple: number * (i + 1)
+           - When i = 0, multiple = number * 1 (first multiple)
+           - When i = 1, multiple = number * 2 (second multiple)
+           - etc.
+        4. Store each calculated multiple in the array at position i
+        5. Return the completed array
+        */
+
+        // Create an array of the specified length
+        double[] result = new double[length];
+
+        // Fill the array with multiples
+        for (int i = 0; i < length; i++)
+        {
+            // Calculate the (i+1)th multiple
+            result[i] = number * (i + 1);
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -29,5 +51,47 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+        /*
+        PLAN FOR RotateListRight:
+        1. Calculate the effective amount to rotate (amount may be larger than data.Count)
+           - Use modulo: amount %= data.Count to handle cases where amount > data.Count
+        2. If amount is 0, no rotation is needed (return early)
+        3. Identify the split point: data.Count - amount
+           - This is where we'll split the list into two parts
+        4. Extract the last 'amount' elements using GetRange():
+           - rightPart = data.GetRange(splitPoint, amount)
+        5. Extract the first 'splitPoint' elements using GetRange():
+           - leftPart = data.GetRange(0, splitPoint)
+        6. Clear the original list: data.Clear()
+        7. Add the rightPart first, then the leftPart using AddRange()
+           - This effectively rotates the list to the right
+        8. The original list is now modified in place
+        */
+
+        // Handle cases where amount might be larger than the list
+        amount = amount % data.Count;
+
+        // If amount is 0, no rotation needed
+        if (amount == 0 || data.Count == 0)
+        {
+            return;
+        }
+
+        // Find the split point
+        int splitPoint = data.Count - amount;
+
+        // Get the last 'amount' elements (these will move to the front)
+        List<int> rightPart = data.GetRange(splitPoint, amount);
+
+        // Get the first 'splitPoint' elements (these will move to the back)
+        List<int> leftPart = data.GetRange(0, splitPoint);
+
+        // Clear the original list
+        data.Clear();
+
+        // Add the right part first, then the left part
+        data.AddRange(rightPart);
+        data.AddRange(leftPart);
     }
 }
