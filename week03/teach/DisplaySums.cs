@@ -1,33 +1,50 @@
-﻿public static class DisplaySums {
-    public static void Run() {
-        DisplaySumPairs([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-        // Should show something like (order does not matter):
-        // 6 4
-        // 7 3
-        // 8 2
-        // 9 1 
+﻿/// <summary>
+/// Display all pairs of numbers in the list that sum to 10.
+/// No duplicates should be displayed.
+/// Assumes the list of numbers has no duplicates.
+/// </summary>
+public static class DisplaySums
+{
+    public static void Run()
+    {
+        List<int> numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
-        Console.WriteLine("------------");
-        DisplaySumPairs([-20, -15, -10, -5, 0, 5, 10, 15, 20]);
-        // Should show something like (order does not matter):
-        // 10 0
-        // 15 -5
-        // 20 -10
-
-        Console.WriteLine("------------");
-        DisplaySumPairs([5, 11, 2, -4, 6, 8, -1]);
-        // Should show something like (order does not matter):
-        // 8 2
-        // -1 11
+        Console.WriteLine("Pairs that sum to 10:");
+        DisplaySumPairs(numbers);
     }
 
     /// <summary>
-    /// Display pairs of numbers (no duplicates should be displayed) that sum to
-    /// 10 using a set in O(n) time.  We are assuming that there are no duplicates
-    /// in the list.
+    /// Finds and displays all pairs of numbers that sum to 10.
+    /// Uses a HashSet for O(n) performance.
     /// </summary>
-    /// <param name="numbers">array of integers</param>
-    private static void DisplaySumPairs(int[] numbers) {
-        // TODO Problem 2 - This should print pairs of numbers in the given array
+    /// <param name="numbers">List of numbers (assumed to have no duplicates)</param>
+    public static void DisplaySumPairs(List<int> numbers)
+    {
+        // Use a HashSet to store numbers we've seen
+        HashSet<int> seen = new HashSet<int>();
+        int targetSum = 10;
+
+        foreach (int num in numbers)
+        {
+            // Calculate the complement needed to reach the target sum
+            int complement = targetSum - num;
+
+            // Check if the complement is already in the set
+            if (seen.Contains(complement))
+            {
+                // Found a pair! Display it (smaller number first for consistency)
+                if (num < complement)
+                {
+                    Console.WriteLine($"{num} + {complement} = {targetSum}");
+                }
+                else
+                {
+                    Console.WriteLine($"{complement} + {num} = {targetSum}");
+                }
+            }
+
+            // Add the current number to the set for future lookups
+            seen.Add(num);
+        }
     }
 }

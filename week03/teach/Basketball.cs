@@ -1,36 +1,74 @@
-﻿/*
- * CSE 212 Lesson 6C 
- * 
- * This code will analyze the NBA basketball data and create a table showing
- * the players with the top 10 career points.
- * 
- * Note about columns:
- * - Player ID is in column 0
- * - Points is in column 8
- * 
- * Each row represents the player's stats for a single season with a single team.
- */
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
-using Microsoft.VisualBasic.FileIO;
-
+/// <summary>
+/// Reads NBA basketball player statistics from a CSV file.
+/// Uses a Dictionary (Map) to sum total points per player.
+/// Displays the top 10 players with the highest total points.
+/// </summary>
 public class Basketball
 {
     public static void Run()
     {
-        var players = new Dictionary<string, int>();
+        // Dictionary to store player ID -> total points
+        Dictionary<string, int> playerPoints = new Dictionary<string, int>();
 
-        using var reader = new TextFieldParser("basketball.csv");
-        reader.TextFieldType = FieldType.Delimited;
-        reader.SetDelimiters(",");
-        reader.ReadFields(); // ignore header row
-        while (!reader.EndOfData) {
-            var fields = reader.ReadFields()!;
-            var playerId = fields[0];
-            var points = int.Parse(fields[8]);
+        // Read the CSV file
+        string filePath = "basketball.csv";
+
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"Error: File '{filePath}' not found.");
+            return;
         }
 
-        Console.WriteLine($"Players: {{{string.Join(", ", players)}}}");
+        // Read all lines from the CSV file
+        string[] lines = File.ReadAllLines(filePath);
 
-        var topPlayers = new string[10];
+        // Skip the header line (first line)
+        for (int i = 1; i < lines.Length; i++)
+        {
+            string line = lines[i];
+
+            // Split the line by comma
+            string[] parts = line.Split(',');
+
+            // Column 0: Player ID
+            // Column 1: Year
+            // Column 8: Points scored that year
+            string playerId = parts[0];
+
+            // Parse points (handle potential empty or invalid values)
+            if (int.TryParse(parts[8], out int points))
+            {
+                // Add points to the player's total
+                if (playerPoints.ContainsKey(playerId))
+                {
+                    playerPoints[playerId] += points;
+                }
+                else
+                {
+                    playerPoints[playerId] = points;
+                }
+            }
+        }
+
+        // Convert the dictionary to a list of KeyValuePair and sort by points (descending)
+        var sortedPlayers = playerPoints
+            .OrderByDescending(p => p.Value)
+            .ToList();
+
+        // Display the top 10 players
+        Console.WriteLine("Top 10 Players by Total Points:");
+        Console.WriteLine("--------------------------------");
+
+        int rank = 1;
+        foreach (var player in sortedPlayers.Take(10))
+        {
+            Console.WriteLine($"{rank}. Player {player.Key}: {player.Value} points");
+            rank++;
+        }
     }
 }

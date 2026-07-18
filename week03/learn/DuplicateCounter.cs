@@ -22,9 +22,32 @@
         Console.WriteLine($"Number of duplicates : {CountDuplicates(data)}");
     }
 
+    /// <summary>
+    /// Counts how many duplicate values exist in the array.
+    /// A duplicate is counted when a value appears for the second, third, etc. time.
+    /// </summary>
+    /// <param name="data">Array of integers to analyze</param>
+    /// <returns>The number of duplicate items in the collection</returns>
     private static int CountDuplicates(int[] data)
     {
-        // Add code here.
-        return 0;
+        // Use a HashSet to track which values we've seen
+        HashSet<int> seen = new HashSet<int>();
+        int duplicateCount = 0;
+
+        foreach (int num in data)
+        {
+            // If the number is already in the set, it's a duplicate
+            if (seen.Contains(num))
+            {
+                duplicateCount++;
+            }
+            else
+            {
+                // First time seeing this number - add it to the set
+                seen.Add(num);
+            }
+        }
+
+        return duplicateCount;
     }
 }

@@ -1,69 +1,89 @@
+using System;
+using System.Collections.Generic;
+
 /// <summary>
-/// Defines a maze using a dictionary. The dictionary is provided by the
-/// user when the Maze object is created. The dictionary will contain the
-/// following mapping:
-///
-/// (x,y) : [left, right, up, down]
-///
-/// 'x' and 'y' are integers and represents locations in the maze.
-/// 'left', 'right', 'up', and 'down' are boolean are represent valid directions
-///
-/// If a direction is false, then we can assume there is a wall in that direction.
-/// If a direction is true, then we can proceed.  
-///
-/// If there is a wall, then throw an InvalidOperationException with the message "Can't go that way!".  If there is no wall,
-/// then the 'currX' and 'currY' values should be changed.
+/// Represents a maze with walls and movement validation.
 /// </summary>
 public class Maze
 {
-    private readonly Dictionary<ValueTuple<int, int>, bool[]> _mazeMap;
-    private int _currX = 1;
-    private int _currY = 1;
+    private Dictionary<(int x, int y), (bool left, bool right, bool up, bool down)> _maze;
 
-    public Maze(Dictionary<ValueTuple<int, int>, bool[]> mazeMap)
+    public Maze(Dictionary<(int x, int y), (bool left, bool right, bool up, bool down)> maze)
     {
-        _mazeMap = mazeMap;
-    }
-
-    // TODO Problem 4 - ADD YOUR CODE HERE
-    /// <summary>
-    /// Check to see if you can move left.  If you can, then move.  If you
-    /// can't move, throw an InvalidOperationException with the message "Can't go that way!".
-    /// </summary>
-    public void MoveLeft()
-    {
-        // FILL IN CODE
+        _maze = maze;
     }
 
     /// <summary>
-    /// Check to see if you can move right.  If you can, then move.  If you
-    /// can't move, throw an InvalidOperationException with the message "Can't go that way!".
+    /// Determines if moving left from the given position is valid.
     /// </summary>
-    public void MoveRight()
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <returns>True if left movement is valid, false otherwise</returns>
+    public bool MoveLeft(int x, int y)
     {
-        // FILL IN CODE
+        // Check if the current position exists in the maze
+        if (!_maze.ContainsKey((x, y)))
+            return false;
+
+        // Check if the cell to the left exists and if the left movement is allowed
+        if (_maze.ContainsKey((x - 1, y)))
+        {
+            return _maze[(x, y)].left;
+        }
+        return false;
     }
 
     /// <summary>
-    /// Check to see if you can move up.  If you can, then move.  If you
-    /// can't move, throw an InvalidOperationException with the message "Can't go that way!".
+    /// Determines if moving right from the given position is valid.
     /// </summary>
-    public void MoveUp()
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <returns>True if right movement is valid, false otherwise</returns>
+    public bool MoveRight(int x, int y)
     {
-        // FILL IN CODE
+        if (!_maze.ContainsKey((x, y)))
+            return false;
+
+        if (_maze.ContainsKey((x + 1, y)))
+        {
+            return _maze[(x, y)].right;
+        }
+        return false;
     }
 
     /// <summary>
-    /// Check to see if you can move down.  If you can, then move.  If you
-    /// can't move, throw an InvalidOperationException with the message "Can't go that way!".
+    /// Determines if moving up from the given position is valid.
     /// </summary>
-    public void MoveDown()
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <returns>True if up movement is valid, false otherwise</returns>
+    public bool MoveUp(int x, int y)
     {
-        // FILL IN CODE
+        if (!_maze.ContainsKey((x, y)))
+            return false;
+
+        if (_maze.ContainsKey((x, y + 1)))
+        {
+            return _maze[(x, y)].up;
+        }
+        return false;
     }
 
-    public string GetStatus()
+    /// <summary>
+    /// Determines if moving down from the given position is valid.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <returns>True if down movement is valid, false otherwise</returns>
+    public bool MoveDown(int x, int y)
     {
-        return $"Current location (x={_currX}, y={_currY})";
+        if (!_maze.ContainsKey((x, y)))
+            return false;
+
+        if (_maze.ContainsKey((x, y - 1)))
+        {
+            return _maze[(x, y)].down;
+        }
+        return false;
     }
 }
