@@ -12,6 +12,10 @@ public class TakingTurnsQueueTests
     // run until the queue is empty
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     // Defect(s) Found: 
+    // 1. PersonQueue.Enqueue() was inserting at the front instead of the back, causing the queue to behave like a Stack (LIFO).
+    //    This resulted in the wrong order: Sue was returned first instead of Bob.
+    // 2. TakingTurnsQueue.GetNextPerson() did not properly handle persons with finite turns, 
+    //    specifically not decrementing turns correctly and not re-adding them when they still had turns left.
     public void TestTakingTurnsQueue_FiniteRepetition()
     {
         var bob = new Person("Bob", 2);
@@ -44,6 +48,10 @@ public class TakingTurnsQueueTests
     // After running 5 times, add George with 3 turns.  Run until the queue is empty.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, George, Sue, Tim, George, Tim, George
     // Defect(s) Found: 
+    // 1. PersonQueue.Enqueue() was inserting at the front instead of the back, causing the queue to behave like a Stack (LIFO).
+    //    This caused the order to be reversed, with Sue being returned before Bob.
+    // 2. TakingTurnsQueue.GetNextPerson() was not correctly decrementing turns for finite-turn people.
+    // 3. The queue was not correctly processing people in the expected FIFO order due to the Enqueue bug.
     public void TestTakingTurnsQueue_AddPlayerMidway()
     {
         var bob = new Person("Bob", 2);
@@ -86,6 +94,11 @@ public class TakingTurnsQueueTests
     // Run 10 times.
     // Expected Result: Bob, Tim, Sue, Bob, Tim, Sue, Tim, Sue, Tim, Tim
     // Defect(s) Found: 
+    // 1. PersonQueue.Enqueue() was inserting at the front instead of the back, causing the queue to behave like a Stack (LIFO).
+    //    This caused Sue to be returned first instead of Bob.
+    // 2. TakingTurnsQueue.GetNextPerson() was not properly handling infinite turns (0).
+    //    People with 0 turns should stay in the queue forever with their turns unchanged.
+    // 3. The infinite turn logic needed to ensure that people with 0 or negative turns are always re-queued without decrementing.
     public void TestTakingTurnsQueue_ForeverZero()
     {
         var timTurns = 0;
@@ -117,6 +130,12 @@ public class TakingTurnsQueueTests
     // Run 10 times.
     // Expected Result: Tim, Sue, Tim, Sue, Tim, Sue, Tim, Tim, Tim, Tim
     // Defect(s) Found: 
+    // 1. PersonQueue.Enqueue() was inserting at the front instead of the back, causing the queue to behave like a Stack (LIFO).
+    //    This caused the order to be reversed, with Sue being returned before Tim.
+    // 2. TakingTurnsQueue.GetNextPerson() was not properly handling infinite turns (negative values).
+    //    People with negative turns should stay in the queue forever with their turns unchanged.
+    // 3. The infinite turn logic needed to ensure that people with 0 or negative turns are always re-queued without decrementing,
+    //    and their Turns value must remain unchanged (e.g., -3 stays -3).
     public void TestTakingTurnsQueue_ForeverNegative()
     {
         var timTurns = -3;
@@ -144,6 +163,8 @@ public class TakingTurnsQueueTests
     // Scenario: Try to get the next person from an empty queue
     // Expected Result: Exception should be thrown with appropriate error message.
     // Defect(s) Found: 
+    // No defects found. The exception was already implemented correctly in TakingTurnsQueue.GetNextPerson().
+    // The InvalidOperationException with the message "No one in the queue." is thrown as expected.
     public void TestTakingTurnsQueue_Empty()
     {
         var players = new TakingTurnsQueue();
