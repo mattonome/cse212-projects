@@ -64,7 +64,7 @@ public static class SetsAndMaps
     }
 
     // ============================================================
-    // Problem 2: Degree Summary
+    // Problem 2: Degree Summary - FIXED
     // ============================================================
 
     /// <summary>
@@ -94,10 +94,10 @@ public static class SetsAndMaps
             // Split by comma
             string[] parts = line.Split(',');
 
-            // Column 4 contains the degree
-            if (parts.Length > 4)
+            // FIXED: Column 3 (0-indexed) contains the degree
+            if (parts.Length > 3)
             {
-                string degree = parts[4].Trim();
+                string degree = parts[3].Trim();
 
                 // Skip empty degrees
                 if (!string.IsNullOrEmpty(degree))
@@ -172,7 +172,7 @@ public static class SetsAndMaps
     }
 
     // ============================================================
-    // Problem 5: Earthquake JSON Data
+    // Problem 5: Earthquake JSON Data - FIXED
     // ============================================================
 
     /// <summary>
@@ -180,18 +180,63 @@ public static class SetsAndMaps
     /// </summary>
     public class FeatureCollection
     {
+        public string Type { get; set; }
         public Feature[] Features { get; set; }
+        public Metadata Metadata { get; set; }
+    }
+
+    public class Metadata
+    {
+        public long Generated { get; set; }
+        public string Url { get; set; }
+        public string Title { get; set; }
+        public int Status { get; set; }
+        public string Api { get; set; }
+        public int Count { get; set; }
     }
 
     public class Feature
     {
+        public string Type { get; set; }
         public Properties Properties { get; set; }
+        public Geometry Geometry { get; set; }
+        public string Id { get; set; }
     }
 
     public class Properties
     {
-        public string Place { get; set; }
         public double Mag { get; set; }
+        public string Place { get; set; }
+        public long Time { get; set; }
+        public long Updated { get; set; }
+        public int Tz { get; set; }
+        public string Url { get; set; }
+        public string Detail { get; set; }
+        public int Felt { get; set; }
+        public double Cdi { get; set; }
+        public double Mmi { get; set; }
+        public string Alert { get; set; }
+        public string Status { get; set; }
+        public int Tsunami { get; set; }
+        public int Sig { get; set; }
+        public string Net { get; set; }
+        public string Code { get; set; }
+        public string Ids { get; set; }
+        public string Sources { get; set; }
+        public string Types { get; set; }
+        public int Nst { get; set; }
+        public double Dmin { get; set; }
+        public double Rms { get; set; }
+        public double Gap { get; set; }
+        public string MagType { get; set; }
+        public string Type { get; set; }
+        public string Title { get; set; }
+    }
+
+    public class Geometry
+    {
+        public string Type { get; set; }
+        public double[] Coordinates { get; set; }
     }
 
     /// <summary>

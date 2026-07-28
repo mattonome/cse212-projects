@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 // DO NOT MODIFY THIS FILE
@@ -9,8 +12,8 @@ public class FindPairsTests
     [TestMethod]
     public void FindPairs_TwoPairs()
     {
-        var actual = SetsAndMaps.FindPairs(["am", "at", "ma", "if", "fi"]);
-        var expected = new[] { "ma & am", "fi & if" };
+        var actual = SetsAndMaps.FindPairs(new string[] { "am", "at", "ma", "if", "fi" });
+        var expected = new string[] { "ma & am", "fi & if" };
 
         Assert.AreEqual(expected.Length, actual.Length);
         Assert.AreEqual(Canonicalize(expected), Canonicalize(actual));
@@ -19,8 +22,8 @@ public class FindPairsTests
     [TestMethod]
     public void FindPairs_OnePair()
     {
-        var actual = SetsAndMaps.FindPairs(["ab", "bc", "cd", "de", "ba"]);
-        var expected = new[] { "ba & ab" };
+        var actual = SetsAndMaps.FindPairs(new string[] { "ab", "bc", "cd", "de", "ba" });
+        var expected = new string[] { "ba & ab" };
 
         Assert.AreEqual(expected.Length, actual.Length);
         Assert.AreEqual(Canonicalize(expected), Canonicalize(actual));
@@ -29,8 +32,8 @@ public class FindPairsTests
     [TestMethod]
     public void FindPairs_SameChar()
     {
-        var actual = SetsAndMaps.FindPairs(["ab", "aa", "ba"]);
-        var expected = new[] { "ba & ab" };
+        var actual = SetsAndMaps.FindPairs(new string[] { "ab", "aa", "ba" });
+        var expected = new string[] { "ba & ab" };
 
         Assert.AreEqual(expected.Length, actual.Length);
         Assert.AreEqual(Canonicalize(expected), Canonicalize(actual));
@@ -39,8 +42,8 @@ public class FindPairsTests
     [TestMethod]
     public void FindPairs_ThreePairs()
     {
-        var actual = SetsAndMaps.FindPairs(["ab", "ba", "ac", "ad", "da", "ca"]);
-        var expected = new[] { "ba & ab", "da & ad", "ca & ac" };
+        var actual = SetsAndMaps.FindPairs(new string[] { "ab", "ba", "ac", "ad", "da", "ca" });
+        var expected = new string[] { "ba & ab", "da & ad", "ca & ac" };
 
         Assert.AreEqual(expected.Length, actual.Length);
         Assert.AreEqual(Canonicalize(expected), Canonicalize(actual));
@@ -49,8 +52,8 @@ public class FindPairsTests
     [TestMethod]
     public void FindPairs_ThreePairsNumbers()
     {
-        var actual = SetsAndMaps.FindPairs(["23", "84", "49", "13", "32", "46", "91", "99", "94", "31", "57", "14"]);
-        var expected = new[] { "32 & 23", "94 & 49", "31 & 13" };
+        var actual = SetsAndMaps.FindPairs(new string[] { "23", "84", "49", "13", "32", "46", "91", "99", "94", "31", "57", "14" });
+        var expected = new string[] { "32 & 23", "94 & 49", "31 & 13" };
 
         Assert.AreEqual(expected.Length, actual.Length);
         Assert.AreEqual(Canonicalize(expected), Canonicalize(actual));
@@ -59,7 +62,7 @@ public class FindPairsTests
     [TestMethod]
     public void FindPairs_NoPairs()
     {
-        var actual = SetsAndMaps.FindPairs(["ab", "ac"]);
+        var actual = SetsAndMaps.FindPairs(new string[] { "ab", "ac" });
         var expected = new string[0];
 
         Assert.AreEqual(expected.Length, actual.Length);
@@ -86,8 +89,8 @@ public class FindPairsTests
         var input = new List<string>(count);
         for (int i = 0; i < count; ++i)
         {
-            char[] chars = ['a', 'b'];
-            string s = new(chars);
+            char[] chars = new char[] { 'a', 'b' };
+            string s = new string(chars);
             input.Add(s);
         }
 
@@ -237,7 +240,7 @@ public class MazeTests
     [TestMethod]
     public void Maze_Basic()
     {
-        Dictionary<ValueTuple<int, int>, bool[]> map = SetupMazeMap();
+        Dictionary<Tuple<int, int>, bool[]> map = SetupMazeMap();
         var maze = new Maze(map);
         Assert.AreEqual("Current location (x=1, y=1)", maze.GetStatus());
         AssertThrowsInvalidOperationException(maze.MoveUp);
@@ -285,46 +288,45 @@ public class MazeTests
         }
     }
 
-    private static Dictionary<ValueTuple<int, int>, bool[]> SetupMazeMap()
+    private static Dictionary<Tuple<int, int>, bool[]> SetupMazeMap()
     {
-        Dictionary<ValueTuple<int, int>, bool[]> map = new() {
-            { (1, 1), new[] { false, true, false, true } },
-            { (1, 2), new[] { false, true, true, false } },
-            { (1, 3), new[] { false, false, false, false } },
-            { (1, 4), new[] { false, true, false, true } },
-            { (1, 5), new[] { false, false, true, true } },
-            { (1, 6), new[] { false, false, true, false } },
-            { (2, 1), new[] { true, false, false, true } },
-            { (2, 2), new[] { true, false, true, true } },
-            { (2, 3), new[] { false, false, true, true } },
-            { (2, 4), new[] { true, true, true, false } },
-            { (2, 5), new[] { false, false, false, false } },
-            { (2, 6), new[] { false, false, false, false } },
-            { (3, 1), new[] { false, false, false, false } },
-            { (3, 2), new[] { false, false, false, false } },
-            { (3, 3), new[] { false, false, false, false } },
-            { (3, 4), new[] { true, true, false, true } },
-            { (3, 5), new[] { false, false, true, true } },
-            { (3, 6), new[] { false, false, true, false } },
-            { (4, 1), new[] { false, true, false, false } },
-            { (4, 2), new[] { false, false, false, false } },
-            { (4, 3), new[] { false, true, false, true } },
-            { (4, 4), new[] { true, true, true, false } },
-            { (4, 5), new[] { false, false, false, false } },
-            { (4, 6), new[] { false, false, false, false } },
-            { (5, 1), new[] { true, true, false, true } },
-            { (5, 2), new[] { false, false, true, true } },
-            { (5, 3), new[] { true, true, true, true } },
-            { (5, 4), new[] { true, false, true, true } },
-            { (5, 5), new[] { false, false, true, true } },
-            { (5, 6), new[] { false, true, true, false } },
-            { (6, 1), new[] { true, false, false, false } },
-            { (6, 2), new[] { false, false, false, false } },
-            { (6, 3), new[] { true, false, false, false } },
-            { (6, 4), new[] { false, false, false, false } },
-            { (6, 5), new[] { false, false, false, false } },
-            { (6, 6), new[] { true, false, false, false } }
-        };
+        Dictionary<Tuple<int, int>, bool[]> map = new Dictionary<Tuple<int, int>, bool[]>();
+        map.Add(Tuple.Create(1, 1), new bool[] { false, true, false, true });
+        map.Add(Tuple.Create(1, 2), new bool[] { false, true, true, false });
+        map.Add(Tuple.Create(1, 3), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(1, 4), new bool[] { false, true, false, true });
+        map.Add(Tuple.Create(1, 5), new bool[] { false, false, true, true });
+        map.Add(Tuple.Create(1, 6), new bool[] { false, false, true, false });
+        map.Add(Tuple.Create(2, 1), new bool[] { true, false, false, true });
+        map.Add(Tuple.Create(2, 2), new bool[] { true, false, true, true });
+        map.Add(Tuple.Create(2, 3), new bool[] { false, false, true, true });
+        map.Add(Tuple.Create(2, 4), new bool[] { true, true, true, false });
+        map.Add(Tuple.Create(2, 5), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(2, 6), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(3, 1), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(3, 2), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(3, 3), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(3, 4), new bool[] { true, true, false, true });
+        map.Add(Tuple.Create(3, 5), new bool[] { false, false, true, true });
+        map.Add(Tuple.Create(3, 6), new bool[] { false, false, true, false });
+        map.Add(Tuple.Create(4, 1), new bool[] { false, true, false, false });
+        map.Add(Tuple.Create(4, 2), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(4, 3), new bool[] { false, true, false, true });
+        map.Add(Tuple.Create(4, 4), new bool[] { true, true, true, false });
+        map.Add(Tuple.Create(4, 5), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(4, 6), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(5, 1), new bool[] { true, true, false, true });
+        map.Add(Tuple.Create(5, 2), new bool[] { false, false, true, true });
+        map.Add(Tuple.Create(5, 3), new bool[] { true, true, true, true });
+        map.Add(Tuple.Create(5, 4), new bool[] { true, false, true, true });
+        map.Add(Tuple.Create(5, 5), new bool[] { false, false, true, true });
+        map.Add(Tuple.Create(5, 6), new bool[] { false, true, true, false });
+        map.Add(Tuple.Create(6, 1), new bool[] { true, false, false, false });
+        map.Add(Tuple.Create(6, 2), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(6, 3), new bool[] { true, false, false, false });
+        map.Add(Tuple.Create(6, 4), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(6, 5), new bool[] { false, false, false, false });
+        map.Add(Tuple.Create(6, 6), new bool[] { true, false, false, false });
         return map;
     }
 }

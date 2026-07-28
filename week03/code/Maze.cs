@@ -6,84 +6,97 @@ using System.Collections.Generic;
 /// </summary>
 public class Maze
 {
-    private Dictionary<(int x, int y), (bool left, bool right, bool up, bool down)> _maze;
+    private Dictionary<Tuple<int, int>, bool[]> _maze;
+    private int _currentX = 1;
+    private int _currentY = 1;
 
-    public Maze(Dictionary<(int x, int y), (bool left, bool right, bool up, bool down)> maze)
+    public Maze(Dictionary<Tuple<int, int>, bool[]> maze)
     {
         _maze = maze;
     }
 
-    /// <summary>
-    /// Determines if moving left from the given position is valid.
-    /// </summary>
-    /// <param name="x">X coordinate</param>
-    /// <param name="y">Y coordinate</param>
-    /// <returns>True if left movement is valid, false otherwise</returns>
+    public string GetStatus()
+    {
+        return $"Current location (x={_currentX}, y={_currentY})";
+    }
+
     public bool MoveLeft(int x, int y)
     {
-        // Check if the current position exists in the maze
-        if (!_maze.ContainsKey((x, y)))
+        var key = Tuple.Create(x, y);
+        if (!_maze.ContainsKey(key))
             return false;
-
-        // Check if the cell to the left exists and if the left movement is allowed
-        if (_maze.ContainsKey((x - 1, y)))
-        {
-            return _maze[(x, y)].left;
-        }
-        return false;
+        return _maze[key][0];
     }
 
-    /// <summary>
-    /// Determines if moving right from the given position is valid.
-    /// </summary>
-    /// <param name="x">X coordinate</param>
-    /// <param name="y">Y coordinate</param>
-    /// <returns>True if right movement is valid, false otherwise</returns>
     public bool MoveRight(int x, int y)
     {
-        if (!_maze.ContainsKey((x, y)))
+        var key = Tuple.Create(x, y);
+        if (!_maze.ContainsKey(key))
             return false;
-
-        if (_maze.ContainsKey((x + 1, y)))
-        {
-            return _maze[(x, y)].right;
-        }
-        return false;
+        return _maze[key][1];
     }
 
-    /// <summary>
-    /// Determines if moving up from the given position is valid.
-    /// </summary>
-    /// <param name="x">X coordinate</param>
-    /// <param name="y">Y coordinate</param>
-    /// <returns>True if up movement is valid, false otherwise</returns>
     public bool MoveUp(int x, int y)
     {
-        if (!_maze.ContainsKey((x, y)))
+        var key = Tuple.Create(x, y);
+        if (!_maze.ContainsKey(key))
             return false;
-
-        if (_maze.ContainsKey((x, y + 1)))
-        {
-            return _maze[(x, y)].up;
-        }
-        return false;
+        return _maze[key][2];
     }
 
-    /// <summary>
-    /// Determines if moving down from the given position is valid.
-    /// </summary>
-    /// <param name="x">X coordinate</param>
-    /// <param name="y">Y coordinate</param>
-    /// <returns>True if down movement is valid, false otherwise</returns>
     public bool MoveDown(int x, int y)
     {
-        if (!_maze.ContainsKey((x, y)))
+        var key = Tuple.Create(x, y);
+        if (!_maze.ContainsKey(key))
             return false;
+        return _maze[key][3];
+    }
 
-        if (_maze.ContainsKey((x, y - 1)))
+    public void MoveLeft()
+    {
+        if (MoveLeft(_currentX, _currentY))
         {
-            return _maze[(x, y)].down;
+            _currentX--;
         }
-        return false;
+        else
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
+    }
+
+    public void MoveRight()
+    {
+        if (MoveRight(_currentX, _currentY))
+        {
+            _currentX++;
+        }
+        else
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
+    }
+
+    public void MoveUp()
+    {
+        if (MoveUp(_currentX, _currentY))
+        {
+            _currentY++;
+        }
+        else
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
+    }
+
+    public void MoveDown()
+    {
+        if (MoveDown(_currentX, _currentY))
+        {
+            _currentY--;
+        }
+        else
+        {
+            throw new InvalidOperationException("Can't go that way!");
+        }
     }
 }
