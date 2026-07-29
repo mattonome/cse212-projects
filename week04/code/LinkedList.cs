@@ -10,6 +10,30 @@ public class LinkedList : IEnumerable<int>
     private Node? _head;
     private Node? _tail;
 
+    // ============================================================
+    // PROPERTIES
+    // ============================================================
+
+    /// <summary>
+    /// Returns true if both head and tail are null.
+    /// </summary>
+    public bool HeadAndTailAreNull()
+    {
+        return _head is null && _tail is null;
+    }
+
+    /// <summary>
+    /// Returns true if both head and tail are not null.
+    /// </summary>
+    public bool HeadAndTailAreNotNull()
+    {
+        return _head is not null && _tail is not null;
+    }
+
+    // ============================================================
+    // INSERT METHODS
+    // ============================================================
+
     /// <summary>
     /// Insert a new node at the front (head) of the linked list.
     /// </summary>
@@ -46,6 +70,40 @@ public class LinkedList : IEnumerable<int>
             _tail = newNode;
         }
     }
+
+    /// <summary>
+    /// Insert a new node after the first node that contains the specified value.
+    /// </summary>
+    public void InsertAfter(int value, int newValue)
+    {
+        if (_head is null)
+        {
+            return;
+        }
+
+        Node current = _head;
+        while (current is not null)
+        {
+            if (current.Data == value)
+            {
+                Node newNode = new Node(newValue);
+                newNode.Next = current.Next;
+                current.Next = newNode;
+
+                // If we inserted after the tail, update tail
+                if (current == _tail)
+                {
+                    _tail = newNode;
+                }
+                return;
+            }
+            current = current.Next;
+        }
+    }
+
+    // ============================================================
+    // REMOVE METHODS
+    // ============================================================
 
     /// <summary>
     /// Remove the node at the front (head) of the linked list.
@@ -105,7 +163,6 @@ public class LinkedList : IEnumerable<int>
             return;
         }
 
-        // FIXED: Use Data instead of Value
         if (_head.Data == value)
         {
             RemoveHead();
@@ -115,7 +172,6 @@ public class LinkedList : IEnumerable<int>
         Node current = _head;
         while (current.Next is not null)
         {
-            // FIXED: Use Data instead of Value
             if (current.Next.Data == value)
             {
                 if (current.Next == _tail)
@@ -132,6 +188,10 @@ public class LinkedList : IEnumerable<int>
         }
     }
 
+    // ============================================================
+    // REPLACE METHODS
+    // ============================================================
+
     /// <summary>
     /// Replace all occurrences of oldValue with newValue.
     /// </summary>
@@ -145,7 +205,6 @@ public class LinkedList : IEnumerable<int>
         Node current = _head;
         while (current is not null)
         {
-            // FIXED: Use Data instead of Value
             if (current.Data == oldValue)
             {
                 current.Data = newValue;
@@ -153,6 +212,10 @@ public class LinkedList : IEnumerable<int>
             current = current.Next;
         }
     }
+
+    // ============================================================
+    // ITERATORS
+    // ============================================================
 
     /// <summary>
     /// Forward iterator (foreach support).
@@ -162,7 +225,6 @@ public class LinkedList : IEnumerable<int>
         Node? current = _head;
         while (current is not null)
         {
-            // FIXED: Use Data instead of Value
             yield return current.Data;
             current = current.Next;
         }
@@ -178,7 +240,6 @@ public class LinkedList : IEnumerable<int>
 
         while (current is not null)
         {
-            // FIXED: Use Data instead of Value
             values.Add(current.Data);
             current = current.Next;
         }
@@ -192,5 +253,23 @@ public class LinkedList : IEnumerable<int>
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
+    }
+}
+
+// ============================================================
+// EXTENSION METHODS
+// ============================================================
+
+/// <summary>
+/// Extension methods for IEnumerable<int> to help with testing.
+/// </summary>
+public static class LinkedListExtensions
+{
+    /// <summary>
+    /// Converts an IEnumerable<int> to a string representation.
+    /// </summary>
+    public static string AsString(this IEnumerable<int> source)
+    {
+        return string.Join(", ", source);
     }
 }
